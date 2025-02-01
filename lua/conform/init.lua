@@ -766,6 +766,10 @@ M.get_formatter_info = function(formatter, bufnr)
     }
   end
 
+  if config["require_cwd"] == nil then
+    config.require_cwd = true
+  end
+
   local ctx = require("conform.runner").build_context(bufnr, config)
 
   local available = true
