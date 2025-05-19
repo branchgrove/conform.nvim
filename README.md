@@ -10,6 +10,7 @@ Lightweight yet powerful formatter plugin for Neovim
 - [Setup](#setup)
 - [Formatters](#formatters)
 - [Customizing formatters](#customizing-formatters)
+  - [Magic strings](#magic-strings)
 - [Recipes](#recipes)
 - [Debugging](#debugging)
 - [Advanced topics](#advanced-topics)
@@ -22,6 +23,7 @@ Lightweight yet powerful formatter plugin for Neovim
   - [list_formatters_to_run(bufnr)](#list_formatters_to_runbufnr)
   - [list_all_formatters()](#list_all_formatters)
   - [get_formatter_info(formatter, bufnr)](#get_formatter_infoformatter-bufnr)
+- [FAQ](#faq)
 - [Acknowledgements](#acknowledgements)
 
 <!-- /TOC -->
@@ -180,7 +182,9 @@ You can view this list in vim with `:help conform-formatters`
 
 <!-- FORMATTERS -->
 
+- [air](https://github.com/posit-dev/air) - R formatter and language server.
 - [alejandra](https://kamadorueda.com/alejandra/) - The Uncompromising Nix Code Formatter.
+- [ansible-lint](https://github.com/ansible/ansible-lint) - ansible-lint with --fix.
 - [asmfmt](https://github.com/klauspost/asmfmt) - Go Assembler Formatter
 - [ast-grep](https://ast-grep.github.io/) - A CLI tool for code structural search, lint and rewriting. Written in Rust.
 - [astyle](https://astyle.sourceforge.net/astyle.html) - A Free, Fast, and Small Automatic Formatter for C, C++, C++/CLI, Objective-C, C#, and Java Source Code.
@@ -202,13 +206,14 @@ You can view this list in vim with `:help conform-formatters`
 - [bsfmt](https://github.com/rokucommunity/brighterscript-formatter) - A code formatter for BrighterScript (and BrightScript).
 - [buf](https://buf.build/docs/reference/cli/buf/format) - A new way of working with Protocol Buffers.
 - [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier) - buildifier is a tool for formatting bazel BUILD and .bzl files with a standard convention.
-- [cabal_fmt](https://hackage.haskell.org/package/cabal-fmt) - Format cabal files with cabal-fmt
+- [cabal_fmt](https://hackage.haskell.org/package/cabal-fmt) - Format cabal files with cabal-fmt.
 - [caramel_fmt](https://caramel.run/manual/reference/cli/fmt.html) - Format Caramel code.
 - [cbfmt](https://github.com/lukas-reineke/cbfmt) - A tool to format codeblocks inside markdown and org documents.
 - [clang-format](https://clang.llvm.org/docs/ClangFormat.html) - Tool to format C/C++/… code according to a set of rules and heuristics.
 - [cljfmt](https://github.com/weavejester/cljfmt) - cljfmt is a tool for detecting and fixing formatting errors in Clojure code.
 - [cljstyle](https://github.com/greglook/cljstyle) - Formatter for Clojure code.
 - [cmake_format](https://github.com/cheshirekow/cmake_format) - Parse cmake listfiles and format them nicely.
+- [codeql](https://docs.github.com/en/code-security/codeql-cli/codeql-cli-manual/query-format) - Format queries and libraries with CodeQL.
 - [codespell](https://github.com/codespell-project/codespell) - Check code for common misspellings.
 - [commitmsgfmt](https://gitlab.com/mkjeldsen/commitmsgfmt) - Formats commit messages better than fmt(1) and Vim.
 - [crlfmt](https://github.com/cockroachdb/crlfmt) - Formatter for CockroachDB's additions to the Go style guide.
@@ -223,6 +228,7 @@ You can view this list in vim with `:help conform-formatters`
 - [dcm_format](https://dcm.dev/docs/cli/formatting/format/) - Formats .dart files.
 - [deno_fmt](https://deno.land/manual/tools/formatter) - Use [Deno](https://deno.land/) to format TypeScript, JavaScript/JSON and markdown.
 - [dfmt](https://github.com/dlang-community/dfmt) - Formatter for D source code.
+- [dioxus](https://github.com/dioxuslabs/dioxus) - Format `rsx!` snippets in Rust files.
 - [djlint](https://github.com/Riverside-Healthcare/djLint) - ✨ HTML Template Linter and Formatter. Django - Jinja - Nunjucks - Handlebars - GoLang.
 - [docformatter](https://pypi.org/project/docformatter/) - docformatter automatically formats docstrings to follow a subset of the PEP 257 conventions.
 - [docstrfmt](https://github.com/LilSpazJoekp/docstrfmt) - reStructuredText formatter.
@@ -256,11 +262,13 @@ You can view this list in vim with `:help conform-formatters`
 - [goimports](https://pkg.go.dev/golang.org/x/tools/cmd/goimports) - Updates your Go import lines, adding missing ones and removing unreferenced ones.
 - [goimports-reviser](https://github.com/incu6us/goimports-reviser) - Right imports sorting & code formatting tool (goimports alternative).
 - [gojq](https://github.com/itchyny/gojq) - Pure Go implementation of jq.
+- [golangci-lint](https://golangci-lint.run/usage/configuration/#fmt) - Fast linters runner for Go (with formatter).
 - [golines](https://github.com/segmentio/golines) - A golang formatter that fixes long lines.
 - [google-java-format](https://github.com/google/google-java-format) - Reformats Java source code according to Google Java Style.
 - [grain_format](https://grain-lang.org/docs/tooling/grain_cli#grain-format) - Code formatter for the grain programming language.
 - [hcl](https://github.com/hashicorp/hcl) - A formatter for HCL files.
 - [hindent](https://github.com/mihaimaruseac/hindent) - Haskell pretty printer.
+- [hledger-fmt](https://github.com/mondeja/hledger-fmt) - An opinionated hledger's journal files formatter.
 - [html_beautify](https://github.com/beautifier/js-beautify) - Beautifier for html.
 - [htmlbeautifier](https://github.com/threedaymonk/htmlbeautifier) - A normaliser/beautifier for HTML that also understands embedded Ruby. Ideal for tidying up Rails templates.
 - [hurlfmt](https://hurl.dev/) - Formats hurl files.
@@ -269,6 +277,7 @@ You can view this list in vim with `:help conform-formatters`
 - [injected](doc/advanced_topics.md#injected-language-formatting-code-blocks) - Format treesitter injected languages.
 - [inko](https://inko-lang.org/) - A language for building concurrent software with confidence
 - [isort](https://github.com/PyCQA/isort) - Python utility / library to sort imports alphabetically and automatically separate them into sections and by type.
+- [janet-format](https://github.com/janet-lang/spork) - A formatter for Janet code.
 - [joker](https://github.com/candid82/joker) - Small Clojure interpreter, linter and formatter.
 - [jq](https://github.com/stedolan/jq) - Command-line JSON processor.
 - [js_beautify](https://github.com/beautifier/js-beautify) - Beautifier for javascript.
@@ -284,6 +293,8 @@ You can view this list in vim with `:help conform-formatters`
 - [liquidsoap-prettier](https://github.com/savonet/liquidsoap-prettier) - A binary to format Liquidsoap scripts
 - [llf](https://repo.or.cz/llf.git) - A LaTeX reformatter / beautifier.
 - [lua-format](https://github.com/Koihik/LuaFormatter) - Code formatter for Lua.
+- [mago_format](https://github.com/carthage-software/mago) - Mago is a toolchain for PHP that aims to provide a set of tools to help developers write better code.
+- [mago_lint](https://github.com/carthage-software/mago) - Mago is a toolchain for PHP that aims to provide a set of tools to help developers write better code.
 - [markdown-toc](https://github.com/jonschlinkert/markdown-toc) - API and CLI for generating a markdown TOC (table of contents) for a README or any markdown files.
 - [markdownfmt](https://github.com/shurcooL/markdownfmt) - Like gofmt, but for Markdown.
 - [markdownlint](https://github.com/DavidAnson/markdownlint) - A Node.js style checker and lint tool for Markdown/CommonMark files.
@@ -299,10 +310,12 @@ You can view this list in vim with `:help conform-formatters`
 - [nixfmt](https://github.com/NixOS/nixfmt) - The official (but not yet stable) formatter for Nix code.
 - [nixpkgs_fmt](https://github.com/nix-community/nixpkgs-fmt) - nixpkgs-fmt is a Nix code formatter for nixpkgs.
 - [nomad_fmt](https://developer.hashicorp.com/nomad/docs/commands/fmt) - The fmt commands check the syntax and rewrites Nomad configuration and jobspec files to canonical format.
+- [nph](https://github.com/arnetheduck/nph) - An opinionated code formatter for Nim.
 - [npm-groovy-lint](https://github.com/nvuillam/npm-groovy-lint) - Lint, format and auto-fix your Groovy / Jenkinsfile / Gradle files using command line.
 - [nufmt](https://github.com/nushell/nufmt) - The nushell formatter.
 - [ocamlformat](https://github.com/ocaml-ppx/ocamlformat) - Auto-formatter for OCaml code.
 - [ocp-indent](https://github.com/OCamlPro/ocp-indent) - Automatic indentation of OCaml source files.
+- [odinfmt](https://github.com/DanielGavin/ols) - Auto-formatter for the Odin programming language.
 - [opa_fmt](https://www.openpolicyagent.org/docs/latest/cli/#opa-fmt) - Format Rego files using `opa fmt` command.
 - [ormolu](https://hackage.haskell.org/package/ormolu) - A formatter for Haskell source code.
 - [packer_fmt](https://developer.hashicorp.com/packer/docs/commands/fmt) - The packer fmt Packer command is used to format HCL2 configuration files to a canonical format and style.
@@ -323,6 +336,7 @@ You can view this list in vim with `:help conform-formatters`
 - [pyink](https://github.com/google/pyink) - A Python formatter, forked from Black with a few different formatting behaviors.
 - [pyproject-fmt](https://github.com/tox-dev/toml-fmt/tree/main/pyproject-fmt) - Apply a consistent format to your pyproject.toml file with comment support.
 - [python-ly](https://github.com/frescobaldi/python-ly) - A Python package and commandline tool to manipulate LilyPond files.
+- [reformat-gherkin](https://github.com/ducminh-phan/reformat-gherkin) - Formatter for Gherkin language.
 - [reorder-python-imports](https://github.com/asottile/reorder-python-imports) - Rewrites source to reorder python imports
 - [rescript-format](https://rescript-lang.org/) - The built-in ReScript formatter.
 - [roc](https://github.com/roc-lang/roc) - A fast, friendly, functional language.
@@ -333,6 +347,7 @@ You can view this list in vim with `:help conform-formatters`
 - [ruff_format](https://docs.astral.sh/ruff/) - An extremely fast Python linter, written in Rust. Formatter subcommand.
 - [ruff_organize_imports](https://docs.astral.sh/ruff/) - An extremely fast Python linter, written in Rust. Organize imports.
 - [rufo](https://github.com/ruby-formatter/rufo) - Rufo is an opinionated ruby formatter.
+- [runic](https://github.com/fredrikekre/Runic.jl) - Julia code formatter.
 - [rustfmt](https://github.com/rust-lang/rustfmt) - A tool for formatting rust code according to style guidelines.
 - [rustywind](https://github.com/avencera/rustywind) - A tool for formatting Tailwind CSS classes.
 - [scalafmt](https://github.com/scalameta/scalafmt) - Code formatter for Scala.
@@ -360,7 +375,7 @@ You can view this list in vim with `:help conform-formatters`
 - [swiftlint](https://github.com/realm/SwiftLint) - A tool to enforce Swift style and conventions.
 - [syntax_tree](https://github.com/ruby-syntax-tree/syntax_tree) - Syntax Tree is a suite of tools built on top of the internal CRuby parser.
 - [taplo](https://github.com/tamasfe/taplo) - A TOML toolkit written in Rust.
-- [templ](https://templ.guide/commands-and-tools/cli/#formatting-templ-files) - Formats templ template files.
+- [templ](https://templ.guide/developer-tools/cli/#formatting-templ-files) - Formats templ template files.
 - [terraform_fmt](https://www.terraform.io/docs/cli/commands/fmt.html) - The terraform-fmt command rewrites `terraform` configuration files to a canonical format and style.
 - [terragrunt_hclfmt](https://terragrunt.gruntwork.io/docs/reference/cli-options/#hclfmt) - Format hcl files into a canonical format.
 - [tex-fmt](https://github.com/WGUNDERWOOD/tex-fmt) - An extremely fast LaTeX formatter written in Rust.
@@ -369,6 +384,7 @@ You can view this list in vim with `:help conform-formatters`
 - [trim_newlines](https://github.com/stevearc/conform.nvim/blob/master/lua/conform/formatters/trim_newlines.lua) - Trim empty lines at the end of the file.
 - [trim_whitespace](https://github.com/stevearc/conform.nvim/blob/master/lua/conform/formatters/trim_whitespace.lua) - Trim trailing whitespace.
 - [twig-cs-fixer](https://github.com/VincentLanglet/Twig-CS-Fixer) - Automatically fix Twig Coding Standards issues
+- [typespec](https://github.com/microsoft/typespec) - TypeSpec compiler and CLI.
 - [typos](https://github.com/crate-ci/typos) - Source code spell checker
 - [typstyle](https://github.com/Enter-tainer/typstyle) - Beautiful and reliable typst code formatter.
 - [ufmt](https://github.com/omnilib/ufmt) - Safe, atomic formatting with black and µsort.
@@ -453,6 +469,15 @@ require("conform").formatters.shfmt = {
   args = { "-i", "2", "-filename", "$FILENAME" },
 }
 ```
+
+### Magic strings
+
+The following magic strings are available in `args` and `range_args`. They will be dynamically replaced at runtime with the relevant value.
+
+- `$FILENAME` - absolute path to the file
+- `$DIRNAME` - absolute path to the directory that contains the file
+- `$RELATIVE_FILEPATH` - relative path to the file
+- `$EXTENSION` - the file extension, e.g. `.py`
 
 ## Recipes
 
@@ -621,26 +646,26 @@ require("conform").formatters.my_formatter = {
 
 `setup(opts)`
 
-| Param                 | Type                                                                                                             | Desc                                                                                                                                                                      |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| opts                  | `nil\|conform.setupOpts`                                                                                         |                                                                                                                                                                           |
-| >formatters_by_ft     | `nil\|table<string, conform.FiletypeFormatter>`                                                                  | Map of filetype to formatters                                                                                                                                             |
-| >format_on_save       | `nil\|conform.FormatOpts\|fun(bufnr: integer): nil\|conform.FormatOpts`                                          | If this is set, Conform will run the formatter on save. It will pass the table to conform.format(). This can also be a function that returns the table.                   |
-| >default_format_opts  | `nil\|conform.DefaultFormatOpts`                                                                                 | The default options to use when calling conform.format()                                                                                                                  |
-| >>timeout_ms          | `nil\|integer`                                                                                                   | Time in milliseconds to block for formatting. Defaults to 1000. No effect if async = true.                                                                                |
-| >>lsp_format          | `nil\|conform.LspFormatOpts`                                                                                     | Configure if and when LSP should be used for formatting. Defaults to "never".                                                                                             |
-|                       | `"never"`                                                                                                        | never use the LSP for formatting (default)                                                                                                                                |
-|                       | `"fallback"`                                                                                                     | LSP formatting is used when no other formatters are available                                                                                                             |
-|                       | `"prefer"`                                                                                                       | use only LSP formatting when available                                                                                                                                    |
-|                       | `"first"`                                                                                                        | LSP formatting is used when available and then other formatters                                                                                                           |
-|                       | `"last"`                                                                                                         | other formatters are used then LSP formatting when available                                                                                                              |
-| >>quiet               | `nil\|boolean`                                                                                                   | Don't show any notifications for warnings or failures. Defaults to false.                                                                                                 |
-| >>stop_after_first    | `nil\|boolean`                                                                                                   | Only run the first available formatter in the list. Defaults to false.                                                                                                    |
-| >format_after_save    | `nil\|conform.FormatOpts\|fun(bufnr: integer): nil\|conform.FormatOpts`                                          | If this is set, Conform will run the formatter asynchronously after save. It will pass the table to conform.format(). This can also be a function that returns the table. |
-| >log_level            | `nil\|integer`                                                                                                   | Set the log level (e.g. `vim.log.levels.DEBUG`). Use `:ConformInfo` to see the location of the log file.                                                                  |
-| >notify_on_error      | `nil\|boolean`                                                                                                   | Conform will notify you when a formatter errors (default true).                                                                                                           |
-| >notify_no_formatters | `nil\|boolean`                                                                                                   | Conform will notify you when no formatters are available for the buffer (default true).                                                                                   |
-| >formatters           | `nil\|table<string, conform.FormatterConfigOverride\|fun(bufnr: integer): nil\|conform.FormatterConfigOverride>` | Custom formatters and overrides for built-in formatters.                                                                                                                  |
+| Param                 | Type                                                                                                             | Desc                                                                                                                                                                                                                                                                                |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| opts                  | `nil\|conform.setupOpts`                                                                                         |                                                                                                                                                                                                                                                                                     |
+| >formatters_by_ft     | `nil\|table<string, conform.FiletypeFormatter>`                                                                  | Map of filetype to formatters                                                                                                                                                                                                                                                       |
+| >format_on_save       | `nil\|conform.FormatOpts\|fun(bufnr: integer): nil\|conform.FormatOpts`                                          | If this is set, Conform will run the formatter on save. It will pass the table to conform.format(). This can also be a function that returns the table.                                                                                                                             |
+| >default_format_opts  | `nil\|conform.DefaultFormatOpts`                                                                                 | The default options to use when calling conform.format()                                                                                                                                                                                                                            |
+| >>timeout_ms          | `nil\|integer`                                                                                                   | Time in milliseconds to block for formatting. Defaults to 1000. No effect if async = true.                                                                                                                                                                                          |
+| >>lsp_format          | `nil\|conform.LspFormatOpts`                                                                                     | Configure if and when LSP should be used for formatting. Defaults to "never".                                                                                                                                                                                                       |
+|                       | `"never"`                                                                                                        | never use the LSP for formatting (default)                                                                                                                                                                                                                                          |
+|                       | `"fallback"`                                                                                                     | LSP formatting is used when no other formatters are available                                                                                                                                                                                                                       |
+|                       | `"prefer"`                                                                                                       | use only LSP formatting when available                                                                                                                                                                                                                                              |
+|                       | `"first"`                                                                                                        | LSP formatting is used when available and then other formatters                                                                                                                                                                                                                     |
+|                       | `"last"`                                                                                                         | other formatters are used then LSP formatting when available                                                                                                                                                                                                                        |
+| >>quiet               | `nil\|boolean`                                                                                                   | Don't show any notifications for warnings or failures. Defaults to false.                                                                                                                                                                                                           |
+| >>stop_after_first    | `nil\|boolean`                                                                                                   | Only run the first available formatter in the list. Defaults to false.                                                                                                                                                                                                              |
+| >format_after_save    | `nil\|conform.FormatOpts\|fun(bufnr: integer): nil\|conform.FormatOpts`                                          | , nil|fun(err: nil|string, did_edit: nil|boolean) If this is set, Conform will run the formatter asynchronously after save. It will pass the table to conform.format(). This can also be a function that returns the table (and an optional callback that is run after formatting). |
+| >log_level            | `nil\|integer`                                                                                                   | Set the log level (e.g. `vim.log.levels.DEBUG`). Use `:ConformInfo` to see the location of the log file.                                                                                                                                                                            |
+| >notify_on_error      | `nil\|boolean`                                                                                                   | Conform will notify you when a formatter errors (default true).                                                                                                                                                                                                                     |
+| >notify_no_formatters | `nil\|boolean`                                                                                                   | Conform will notify you when no formatters are available for the buffer (default true).                                                                                                                                                                                             |
+| >formatters           | `nil\|table<string, conform.FormatterConfigOverride\|fun(bufnr: integer): nil\|conform.FormatterConfigOverride>` | Custom formatters and overrides for built-in formatters.                                                                                                                                                                                                                            |
 
 ### format(opts, callback)
 
@@ -677,6 +702,18 @@ Returns:
 | Type    | Desc                                  |
 | ------- | ------------------------------------- |
 | boolean | True if any formatters were attempted |
+
+**Examples:**
+```lua
+-- Synchronously format the current buffer
+conform.format({ lsp_format = "fallback" })
+-- Asynchronously format the current buffer; will not block the UI
+conform.format({ async = true }, function(err, did_edit)
+  -- called after formatting
+end
+-- Format the current buffer with a specific formatter
+conform.format({ formatters = { "ruff_fix" } })
+```
 
 ### list_formatters(bufnr)
 
@@ -724,6 +761,17 @@ Get information about a formatter (including availability)
 | formatter | `string`       | The name of the formatter |
 | bufnr     | `nil\|integer` |                           |
 <!-- /API -->
+
+## FAQ
+
+**Q:** Instead of passing `lsp_format = "..."`, could you just define a `lsp` formatter? \
+**A:** No. [#61](https://github.com/stevearc/conform.nvim/issues/61)
+
+**Q:** Is it possible to define a custom formatter that runs a lua function? \
+**A:** Yes, but with some very strict constraints. [#653](https://github.com/stevearc/conform.nvim/issues/653)
+
+**Q:** Can I run a command like `:EslintFixAll` or a LSP code action as a formatter? \
+**A:** No. [#502](https://github.com/stevearc/conform.nvim/issues/502), [#466](https://github.com/stevearc/conform.nvim/issues/466), [#222](https://github.com/stevearc/conform.nvim/issues/222)
 
 ## Acknowledgements
 

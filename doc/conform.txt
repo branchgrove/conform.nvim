@@ -150,10 +150,12 @@ setup({opts})                                                      *conform.setu
               {stop_after_first} `nil|boolean` Only run the first available
                                  formatter in the list. Defaults to false.
           {format_after_save} `nil|conform.FormatOpts|fun(bufnr: integer): nil|conform.FormatOpts`
+                             , nil|fun(err: nil|string, did_edit: nil|boolean)
                              If this is set, Conform will run the formatter
                              asynchronously after save. It will pass the table
                              to conform.format(). This can also be a function
-                             that returns the table.
+                             that returns the table (and an optional callback
+                             that is run after formatting).
           {log_level}        `nil|integer` Set the log level (e.g.
                              `vim.log.levels.DEBUG`). Use `:ConformInfo` to see
                              the location of the log file.
@@ -217,6 +219,17 @@ format({opts}, {callback}): boolean                               *conform.forma
     Returns:
       `boolean` True if any formatters were attempted
 
+    Examples: >lua
+      -- Synchronously format the current buffer
+      conform.format({ lsp_format = "fallback" })
+      -- Asynchronously format the current buffer; will not block the UI
+      conform.format({ async = true }, function(err, did_edit)
+        -- called after formatting
+      end
+      -- Format the current buffer with a specific formatter
+      conform.format({ formatters = { "ruff_fix" } })
+<
+
 list_formatters({bufnr}): conform.FormatterInfo[]        *conform.list_formatters*
     Retrieve the available formatters for a buffer
 
@@ -249,7 +262,9 @@ get_formatter_info({formatter}, {bufnr}): conform.FormatterInfo *conform.get_for
 --------------------------------------------------------------------------------
 FORMATTERS                                                    *conform-formatters*
 
+`air` - R formatter and language server.
 `alejandra` - The Uncompromising Nix Code Formatter.
+`ansible-lint` - ansible-lint with --fix.
 `asmfmt` - Go Assembler Formatter
 `ast-grep` - A CLI tool for code structural search, lint and rewriting. Written
            in Rust.
@@ -284,7 +299,7 @@ FORMATTERS                                                    *conform-formatter
 `buf` - A new way of working with Protocol Buffers.
 `buildifier` - buildifier is a tool for formatting bazel BUILD and .bzl files
              with a standard convention.
-`cabal_fmt` - Format cabal files with cabal-fmt
+`cabal_fmt` - Format cabal files with cabal-fmt.
 `caramel_fmt` - Format Caramel code.
 `cbfmt` - A tool to format codeblocks inside markdown and org documents.
 `clang-format` - Tool to format C/C++/… code according to a set of rules and
@@ -293,6 +308,7 @@ FORMATTERS                                                    *conform-formatter
          Clojure code.
 `cljstyle` - Formatter for Clojure code.
 `cmake_format` - Parse cmake listfiles and format them nicely.
+`codeql` - Format queries and libraries with CodeQL.
 `codespell` - Check code for common misspellings.
 `commitmsgfmt` - Formats commit messages better than fmt(1) and Vim.
 `crlfmt` - Formatter for CockroachDB's additions to the Go style guide.
@@ -310,6 +326,7 @@ FORMATTERS                                                    *conform-formatter
 `deno_fmt` - Use [Deno](https://deno.land/) to format TypeScript,
            JavaScript/JSON and markdown.
 `dfmt` - Formatter for D source code.
+`dioxus` - Format `rsx!` snippets in Rust files.
 `djlint` - ✨ HTML Template Linter and Formatter. Django - Jinja - Nunjucks -
          Handlebars - GoLang.
 `docformatter` - docformatter automatically formats docstrings to follow a
@@ -356,12 +373,14 @@ FORMATTERS                                                    *conform-formatter
 `goimports-reviser` - Right imports sorting & code formatting tool (goimports
                     alternative).
 `gojq` - Pure Go implementation of jq.
+`golangci-lint` - Fast linters runner for Go (with formatter).
 `golines` - A golang formatter that fixes long lines.
 `google-java-format` - Reformats Java source code according to Google Java
                      Style.
 `grain_format` - Code formatter for the grain programming language.
 `hcl` - A formatter for HCL files.
 `hindent` - Haskell pretty printer.
+`hledger-fmt` - An opinionated hledger's journal files formatter.
 `html_beautify` - Beautifier for html.
 `htmlbeautifier` - A normaliser/beautifier for HTML that also understands
                  embedded Ruby. Ideal for tidying up Rails templates.
@@ -372,6 +391,7 @@ FORMATTERS                                                    *conform-formatter
 `inko` - A language for building concurrent software with confidence
 `isort` - Python utility / library to sort imports alphabetically and
         automatically separate them into sections and by type.
+`janet-format` - A formatter for Janet code.
 `joker` - Small Clojure interpreter, linter and formatter.
 `jq` - Command-line JSON processor.
 `js_beautify` - Beautifier for javascript.
@@ -389,6 +409,10 @@ FORMATTERS                                                    *conform-formatter
 `liquidsoap-prettier` - A binary to format Liquidsoap scripts
 `llf` - A LaTeX reformatter / beautifier.
 `lua-format` - Code formatter for Lua.
+`mago_format` - Mago is a toolchain for PHP that aims to provide a set of tools
+              to help developers write better code.
+`mago_lint` - Mago is a toolchain for PHP that aims to provide a set of tools to
+            help developers write better code.
 `markdown-toc` - API and CLI for generating a markdown TOC (table of contents)
                for a README or any markdown files.
 `markdownfmt` - Like gofmt, but for Markdown.
@@ -412,11 +436,13 @@ FORMATTERS                                                    *conform-formatter
 `nixpkgs_fmt` - nixpkgs-fmt is a Nix code formatter for nixpkgs.
 `nomad_fmt` - The fmt commands check the syntax and rewrites Nomad configuration
             and jobspec files to canonical format.
+`nph` - An opinionated code formatter for Nim.
 `npm-groovy-lint` - Lint, format and auto-fix your Groovy / Jenkinsfile / Gradle
                   files using command line.
 `nufmt` - The nushell formatter.
 `ocamlformat` - Auto-formatter for OCaml code.
 `ocp-indent` - Automatic indentation of OCaml source files.
+`odinfmt` - Auto-formatter for the Odin programming language.
 `opa_fmt` - Format Rego files using `opa fmt` command.
 `ormolu` - A formatter for Haskell source code.
 `packer_fmt` - The packer fmt Packer command is used to format HCL2
@@ -446,6 +472,7 @@ FORMATTERS                                                    *conform-formatter
                 comment support.
 `python-ly` - A Python package and commandline tool to manipulate LilyPond
             files.
+`reformat-gherkin` - Formatter for Gherkin language.
 `reorder-python-imports` - Rewrites source to reorder python imports
 `rescript-format` - The built-in ReScript formatter.
 `roc` - A fast, friendly, functional language.
@@ -459,6 +486,7 @@ FORMATTERS                                                    *conform-formatter
 `ruff_organize_imports` - An extremely fast Python linter, written in Rust.
                         Organize imports.
 `rufo` - Rufo is an opinionated ruby formatter.
+`runic` - Julia code formatter.
 `rustfmt` - A tool for formatting rust code according to style guidelines.
 `rustywind` - A tool for formatting Tailwind CSS classes.
 `scalafmt` - Code formatter for Scala.
@@ -507,6 +535,7 @@ FORMATTERS                                                    *conform-formatter
 `trim_newlines` - Trim empty lines at the end of the file.
 `trim_whitespace` - Trim trailing whitespace.
 `twig-cs-fixer` - Automatically fix Twig Coding Standards issues
+`typespec` - TypeSpec compiler and CLI.
 `typos` - Source code spell checker
 `typstyle` - Beautiful and reliable typst code formatter.
 `ufmt` - Safe, atomic formatting with black and µsort.
