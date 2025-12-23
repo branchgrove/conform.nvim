@@ -5,9 +5,11 @@
 - [Format command](#format-command)
 - [Autoformat with extra features](#autoformat-with-extra-features)
 - [Command to toggle format-on-save](#command-to-toggle-format-on-save)
+- [Run LSP Commands Before Formatting](#run-lsp-commands-before-formatting)
 - [Lazy loading with lazy.nvim](#lazy-loading-with-lazynvim)
 - [Leave visual mode after range format](#leave-visual-mode-after-range-format)
 - [Run the first available formatter followed by more formatters](#run-the-first-available-formatter-followed-by-more-formatters)
+- [Create a separate command to do special formatting you don't want to happen on save](#create-a-separate-command-to-do-special-formatting-you-dont-want-to-happen-on-save)
 
 <!-- /TOC -->
 
@@ -107,6 +109,39 @@ end, {
 })
 ```
 
+## Run LSP Commands Before Formatting
+
+You can run LSP commands before formatting a file. This example uses the `ts_ls` server to organize imports along with formatting, but the structure is adaptable to any LSP action.
+
+```lua
+vim.api.nvim_create_autocmd("BufWritePre", {
+  desc = "Format before save",
+  pattern = "*",
+  group = vim.api.nvim_create_augroup("FormatConfig", { clear = true }),
+  callback = function(ev)
+    local conform_opts = { bufnr = ev.buf, lsp_format = "fallback", timeout_ms = 2000 }
+    local client = vim.lsp.get_clients({ name = "ts_ls", bufnr = ev.buf })[1]
+
+    if not client then
+      require("conform").format(conform_opts)
+      return
+    end
+
+    local request_result = client:request_sync("workspace/executeCommand", {
+      command = "_typescript.organizeImports",
+      arguments = { vim.api.nvim_buf_get_name(ev.buf) },
+    })
+
+    if request_result and request_result.err then
+      vim.notify(request_result.err.message, vim.log.levels.ERROR)
+      return
+    end
+
+    require("conform").format(conform_opts)
+  end,
+})
+```
+
 ## Lazy loading with lazy.nvim
 
 Here is the recommended config for lazy-loading using lazy.nvim
@@ -146,7 +181,7 @@ return {
     -- Customize formatters
     formatters = {
       shfmt = {
-        prepend_args = { "-i", "2" },
+        append_args = { "-i", "2" },
       },
     },
   },
@@ -203,4 +238,30 @@ require("conform").setup({
     end,
   },
 })
+```
+
+## Create a separate command to do special formatting you don't want to happen on save
+
+Some formatters have multiple modes, or perform some operations that you don't want to happen on
+every save, but you do want to run them on-demand. For these, you can declare them as a separate
+formatter and create a keymap that invokes it directly. In this example, we will use
+`gdscript-formatter` to format on save and have a special keymap to use it to reorder code.
+
+```lua
+require("conform").setup({
+  formatters_by_ft = {
+    gdscript = { "gdscript-formatter" },
+  },
+  formatters = {
+    ["gdscript-reorder"] = {
+      inherit = "gdscript-formatter",
+      prepend_args = { "--reorder-code" },
+    },
+  },
+  format_on_save = {},
+})
+
+vim.keymap.set("n", "<leader>fo", function()
+  require("conform").format({ formatters = { "gdscript-reorder" } })
+end, { desc = "[F]ormat Re[O]rder" })
 ```

@@ -91,7 +91,8 @@ OPTIONS                                                          *conform-option
           env = {
             VAR = "value",
           },
-          -- Set to false to disable merging the config with the base definition
+          -- Set to false to disable merging the config with the base definition.
+          -- Can also be set to the name of the formatter to merge with (e.g. inherit = "black")
           inherit = true,
           -- When inherit = true, add these additional arguments to the beginning of the command.
           -- This can also be a function, like args
@@ -214,6 +215,8 @@ format({opts}, {callback}): boolean                               *conform.forma
                              using LSP formatting
           {filter}           `nil|fun(client: table): boolean` Passed to |vim.ls
                              p.buf.format| when using LSP formatting
+          {formatting_options} `nil|table` Passed to |vim.lsp.buf.format| when
+                             using LSP formatting
       {callback} `nil|fun(err: nil|string, did_edit: nil|boolean)` Called once
                  formatting has completed
     Returns:
@@ -225,7 +228,7 @@ format({opts}, {callback}): boolean                               *conform.forma
       -- Asynchronously format the current buffer; will not block the UI
       conform.format({ async = true }, function(err, did_edit)
         -- called after formatting
-      end
+      end)
       -- Format the current buffer with a specific formatter
       conform.format({ formatters = { "ruff_fix" } })
 <
@@ -278,6 +281,7 @@ FORMATTERS                                                    *conform-formatter
             pyflakes.
 `autopep8` - A tool that automatically formats Python code to conform to the PEP
            8 style guide.
+`bake` - A Makefile formatter and linter.
 `bean-format` - Reformat Beancount files to right-align all the numbers at the
               same, minimal column.
 `beautysh` - A Bash beautifier for the masses.
@@ -285,11 +289,16 @@ FORMATTERS                                                    *conform-formatter
 `bicep` - Bicep is a Domain Specific Language (DSL) for deploying Azure
         resources declaratively.
 `biome` - A toolchain for web projects, aimed to provide functionalities to
-        maintain them.
+        maintain them. This config runs formatting *only*. See `biome-check` or
+        `biome-organize-imports` for other options.
 `biome-check` - A toolchain for web projects, aimed to provide functionalities
-              to maintain them.
+              to maintain them. This config runs formatting, linting and import
+              sorting. See `biome` or `biome-organize-imports` for other
+              options.
 `biome-organize-imports` - A toolchain for web projects, aimed to provide
-                         functionalities to maintain them.
+                         functionalities to maintain them. This config runs
+                         import sorting *only*. See `biome` or `biome-check` for
+                         other options.
 `black` - The uncompromising Python code formatter.
 `blade-formatter` - An opinionated blade template formatter for Laravel that
                   respects readability.
@@ -302,6 +311,7 @@ FORMATTERS                                                    *conform-formatter
 `cabal_fmt` - Format cabal files with cabal-fmt.
 `caramel_fmt` - Format Caramel code.
 `cbfmt` - A tool to format codeblocks inside markdown and org documents.
+`cedar` - Formats cedar policies.
 `clang-format` - Tool to format C/C++/… code according to a set of rules and
                heuristics.
 `cljfmt` - cljfmt is a tool for detecting and fixing formatting errors in
@@ -331,6 +341,7 @@ FORMATTERS                                                    *conform-formatter
          Handlebars - GoLang.
 `docformatter` - docformatter automatically formats docstrings to follow a
                subset of the PEP 257 conventions.
+`dockerfmt` - Dockerfile formatter. a modern dockfmt.
 `docstrfmt` - reStructuredText formatter.
 `doctoc` - Generates table of contents for markdown files inside local git
          repository.
@@ -352,7 +363,6 @@ FORMATTERS                                                    *conform-formatter
 `forge_fmt` - Forge is a command-line tool that ships with Foundry. Forge tests,
             builds, and deploys your smart contracts.
 `format-dune-file` - Auto-formatter for Dune files.
-`format-queries` - Tree-sitter query formatter.
 `fourmolu` - A fork of ormolu that uses four space indentation and allows
            arbitrary configuration.
 `fprettify` - Auto-formatter for modern fortran source code.
@@ -360,7 +370,10 @@ FORMATTERS                                                    *conform-formatter
 `gci` - GCI, a tool that controls Go package import order and makes it always
       deterministic.
 `gdformat` - A formatter for Godot's gdscript.
+`gdscript-formatter` - A faster code formatter for GDScript and Godot 4.
 `gersemi` - A formatter to make your CMake code the real treasure.
+`ghdl` - Open-source analyzer, compiler, simulator and synthesizer for VHDL.
+`ghokin` - Parallelized formatter with no external dependencies for gherkin.
 `gleam` - ⭐️ A friendly language for building type-safe, scalable systems!
 `gluon_fmt` - Code formatting for the gluon programming language.
 `gn` - gn build system.
@@ -395,10 +408,13 @@ FORMATTERS                                                    *conform-formatter
 `joker` - Small Clojure interpreter, linter and formatter.
 `jq` - Command-line JSON processor.
 `js_beautify` - Beautifier for javascript.
+`json_repair` - A python module to repair invalid JSON from LLMs.
 `jsonnetfmt` - jsonnetfmt is a command line tool to format jsonnet files.
 `just` - Format Justfile.
 `kcl` - The KCL Format tool modifies the files according to the KCL code style.
 `kdlfmt` - A formatter for kdl documents.
+`keep-sorted` - keep-sorted is a language-agnostic formatter that sorts lines
+              between two markers in a larger file.
 `ktfmt` - Reformats Kotlin source code to comply with the common community
         standard conventions.
 `ktlint` - An anti-bikeshedding Kotlin linter with built-in formatter.
@@ -425,6 +441,9 @@ FORMATTERS                                                    *conform-formatter
 `mdsf` - Format markdown code blocks using your favorite code formatters.
 `mdslw` - Prepare your markdown for easy diff'ing by adding line breaks after
         every sentence.
+`meson` - Format meson source files.
+`mh_style` - A simple coding style checker and code formatter for MATLAB or
+           Octave code.
 `mix` - Format Elixir files using the mix format command.
 `mojo_format` - Official Formatter for The Mojo Programming Language
 `nginxfmt` - nginx config file formatter/beautifier written in Python with no
@@ -432,7 +451,7 @@ FORMATTERS                                                    *conform-formatter
 `nickel` - Code formatter for the Nickel programming language.
 `nimpretty` - nimpretty is a Nim source code beautifier that follows the
             official style guide.
-`nixfmt` - The official (but not yet stable) formatter for Nix code.
+`nixfmt` - The official formatter for Nix code.
 `nixpkgs_fmt` - nixpkgs-fmt is a Nix code formatter for nixpkgs.
 `nomad_fmt` - The fmt commands check the syntax and rewrites Nomad configuration
             and jobspec files to canonical format.
@@ -445,8 +464,12 @@ FORMATTERS                                                    *conform-formatter
 `odinfmt` - Auto-formatter for the Odin programming language.
 `opa_fmt` - Format Rego files using `opa fmt` command.
 `ormolu` - A formatter for Haskell source code.
+`oxfmt` - A Prettier-compatible code formatter.
+`oxlint` - An oxidized replacement for ESLint that fixes lint errors.
 `packer_fmt` - The packer fmt Packer command is used to format HCL2
              configuration files to a canonical format and style.
+`palantir-java-format` - A modern, lambda-friendly, 120 character Java
+                       formatter.
 `pangu` - Insert whitespace between CJK and half-width characters.
 `perlimports` - Make implicit Perl imports explicit.
 `perltidy` - Perl::Tidy, a source code formatter for Perl.
@@ -457,6 +480,7 @@ FORMATTERS                                                    *conform-formatter
 `phpinsights` - The perfect starting point to analyze the code quality of your
               PHP projects.
 `pint` - Laravel Pint is an opinionated PHP code style fixer for minimalists.
+`pkl` - Official canonical formatter for Pkl.
 `prettier` - Prettier is an opinionated code formatter. It enforces a consistent
            style by parsing your code and re-printing it with its own rules that
            take the maximum line length into account, wrapping code when
@@ -464,14 +488,21 @@ FORMATTERS                                                    *conform-formatter
 `prettierd` - prettier, as a daemon, for ludicrous formatting speed.
 `pretty-php` - The opinionated PHP code formatter.
 `prettypst` - Formatter for Typst.
+`prolog` - Language Server Protocol server and formatter for SWI-Prolog.
 `puppet-lint` - Check that your Puppet manifests conform to the style guide.
 `purs-tidy` - A syntax tidy-upper for PureScript.
+`pycln` - A Python formatter for finding and removing unused import statements.
 `pyink` - A Python formatter, forked from Black with a few different formatting
         behaviors.
+`pymarkdownlnt` - A markdown linter and formatter.
 `pyproject-fmt` - Apply a consistent format to your pyproject.toml file with
                 comment support.
 `python-ly` - A Python package and commandline tool to manipulate LilyPond
             files.
+`pyupgrade` - A tool to automatically upgrade syntax for newer versions of
+            Python.
+`qmlformat` - A tool that automatically formats QML files.
+`racketfmt` - Racket language formatter.
 `reformat-gherkin` - Formatter for Gherkin language.
 `reorder-python-imports` - Rewrites source to reorder python imports
 `rescript-format` - The built-in ReScript formatter.
@@ -497,6 +528,8 @@ FORMATTERS                                                    *conform-formatter
 `smlfmt` - A custom parser and code formatter for Standard ML.
 `snakefmt` - a formatting tool for Snakemake files following the design of
            Black.
+`spotless_gradle` - Spotless plugin for Gradle.
+`spotless_maven` - Spotless plugin for Maven.
 `sql_formatter` - A whitespace formatter for different query languages.
 `sqlfluff` - A modular SQL linter and auto-formatter with support for multiple
            dialects and templated code.
@@ -515,14 +548,16 @@ FORMATTERS                                                    *conform-formatter
 `stylish-haskell` - Haskell code prettifier.
 `stylua` - An opinionated code formatter for Lua.
 `superhtml` - HTML Language Server and Templating Language Library.
-`swift_format` - Swift formatter from apple. Requires building from source with
-               `swift build`.
+`swift` - Official Swift formatter. Requires Swift 6.0 or later.
+`swift_format` - Official Swift formatter. For Swift 6.0 or later prefer setting
+               the `swift` formatter instead.
 `swiftformat` - SwiftFormat is a code library and command-line tool for
               reformatting `swift` code on macOS or Linux.
 `swiftlint` - A tool to enforce Swift style and conventions.
 `syntax_tree` - Syntax Tree is a suite of tools built on top of the internal
               CRuby parser.
 `taplo` - A TOML toolkit written in Rust.
+`tclfmt` - A formatter for Tcl scripts, part of the tclint project.
 `templ` - Formats templ template files.
 `terraform_fmt` - The terraform-fmt command rewrites `terraform` configuration
                 files to a canonical format and style.
@@ -532,6 +567,8 @@ FORMATTERS                                                    *conform-formatter
         formatting.
 `tofu_fmt` - The tofu-fmt command rewrites OpenTofu configuration files to a
            canonical format and style.
+`tombi` - TOML Formatter / Linter.
+`treefmt` - one CLI to format your repo.
 `trim_newlines` - Trim empty lines at the end of the file.
 `trim_whitespace` - Trim trailing whitespace.
 `twig-cs-fixer` - Automatically fix Twig Coding Standards issues
@@ -542,6 +579,7 @@ FORMATTERS                                                    *conform-formatter
 `uncrustify` - A source code beautifier for C, C++, C#, ObjectiveC, D, Java,
              Pawn and Vala.
 `usort` - Safe, minimal import sorting for Python projects.
+`v` - V language formatter.
 `verible` - The SystemVerilog formatter.
 `vsg` - Style guide enforcement for VHDL.
 `xmlformatter` - xmlformatter is an Open Source Python package, which provides

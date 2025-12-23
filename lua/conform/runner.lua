@@ -1,3 +1,4 @@
+local dir_manager = require("conform.dir_manager")
 local errors = require("conform.errors")
 local fs = require("conform.fs")
 local ft_to_ext = require("conform.ft_to_ext")
@@ -122,7 +123,8 @@ local function create_text_edit(
   is_insert,
   is_replace,
   orig_line_start,
-  orig_line_end
+  orig_line_end,
+  line_ending
 )
   local start_line, end_line = orig_line_start - 1, orig_line_end - 1
   local start_char, end_char = 0, 0
@@ -152,7 +154,7 @@ local function create_text_edit(
   if is_insert and start_line < #original_lines then
     table.insert(replacement, "")
   end
-  local new_text = table.concat(replacement, "\n")
+  local new_text = table.concat(replacement, line_ending)
 
   return {
     newText = new_text,
@@ -228,22 +230,24 @@ M.apply_format = function(
     local is_replace = not is_insert and not is_delete
     local orig_line_end = orig_line_start + orig_line_count
     local new_line_end = new_line_start + new_line_count
-
-    if is_insert then
-      -- When the diff is an insert, it actually means to insert after the mentioned line
-      orig_line_start = orig_line_start + 1
-      orig_line_end = orig_line_end + 1
-    end
-
     local replacement = util.tbl_slice(new_lines, new_line_start, new_line_end - 1)
 
     -- For replacement edits, convert the end line to be inclusive
     if is_replace then
       orig_line_end = orig_line_end - 1
     end
+
     local should_apply_diff = not only_apply_range
       or not range
-      or indices_in_range(range, orig_line_start, orig_line_end)
+      or (is_insert and indices_in_range(range, orig_line_start, orig_line_start + 1))
+      or (not is_insert and indices_in_range(range, orig_line_start, orig_line_end))
+
+    -- When the diff is an insert, it actually means to insert after the mentioned line
+    if is_insert then
+      orig_line_start = orig_line_start + 1
+      orig_line_end = orig_line_end + 1
+    end
+
     if should_apply_diff then
       local text_edit = create_text_edit(
         original_lines,
@@ -251,7 +255,8 @@ M.apply_format = function(
         is_insert,
         is_replace,
         orig_line_start,
-        orig_line_end
+        orig_line_end,
+        util.buf_line_ending(bufnr)
       )
       table.insert(text_edits, text_edit)
 
@@ -366,12 +371,14 @@ local function run_formatter(bufnr, formatter, config, ctx, input_lines, opts, c
 
   if not config.stdin then
     log.debug("Creating temp file %s", ctx.filename)
+    dir_manager.ensure_parent(ctx.filename)
     local fd = assert(uv.fs_open(ctx.filename, "w", 448)) -- 0700
     uv.fs_write(fd, buffer_text)
     uv.fs_close(fd)
     callback = util.wrap_callback(callback, function()
       log.debug("Cleaning up temp file %s", ctx.filename)
       uv.fs_unlink(ctx.filename)
+      dir_manager.cleanup()
     end)
   end
 
@@ -397,8 +404,8 @@ local function run_formatter(bufnr, formatter, config, ctx, input_lines, opts, c
     },
     vim.schedule_wrap(function(result)
       local code = result.code
-      local stdout = result.stdout and vim.split(result.stdout, "\n") or {}
-      local stderr = result.stderr and vim.split(result.stderr, "\n") or {}
+      local stdout = result.stdout and vim.split(result.stdout, "\r?\n") or {}
+      local stderr = result.stderr and vim.split(result.stderr, "\r?\n") or {}
       if vim.tbl_contains(exit_codes, code) then
         local output = stdout
         if not config.stdin then
@@ -504,8 +511,12 @@ M.build_context = function(bufnr, config, range)
     local basename = vim.fs.basename(filename)
     local tmpname =
       template:gsub("$RANDOM", tostring(math.random(1000000, 9999999))):gsub("$FILENAME", basename)
-    local parent = vim.fs.dirname(filename)
-    filename = fs.join(parent, tmpname)
+    if fs.is_absolute(tmpname) then
+      filename = tmpname
+    else
+      local parent = vim.fs.dirname(filename)
+      filename = fs.join(parent, tmpname)
+    end
   end
   return {
     buf = bufnr,

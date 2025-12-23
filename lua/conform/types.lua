@@ -33,7 +33,7 @@
 ---@alias conform.FormatterConfig conform.JobFormatterConfig|conform.LuaFormatterConfig
 
 ---@class (exact) conform.FormatterConfigOverride : conform.JobFormatterConfig
----@field inherit? boolean
+---@field inherit? boolean|string False creates an entirely new formatter. True will merge the config with the formatter defined in conform. Use a string name (e.g. "prettier") to inherit from that conform formatter.
 ---@field command? string|fun(self: conform.FormatterConfig, ctx: conform.Context): string
 ---@field prepend_args? string|string[]|fun(self: conform.FormatterConfig, ctx: conform.Context): string|string[]
 ---@field append_args? string|string[]|fun(self: conform.FormatterConfig, ctx: conform.Context): string|string[]
@@ -86,6 +86,7 @@
 ---@field id? integer Passed to |vim.lsp.buf.format| when using LSP formatting
 ---@field name? string Passed to |vim.lsp.buf.format| when using LSP formatting
 ---@field filter? fun(client: table): boolean Passed to |vim.lsp.buf.format| when using LSP formatting
+---@field formatting_options? table Passed to |vim.lsp.buf.format| when using LSP formatting
 
 ---@class (exact) conform.DefaultFormatOpts
 ---@field timeout_ms? integer Time in milliseconds to block for formatting. Defaults to 1000. No effect if async = true.
@@ -97,6 +98,7 @@
 ---@field id? integer Passed to |vim.lsp.buf.format| when using LSP formatting
 ---@field name? string Passed to |vim.lsp.buf.format| when using LSP formatting
 ---@field filter? fun(client: table): boolean Passed to |vim.lsp.buf.format| when using LSP formatting
+---@field formatting_options? table Passed to |vim.lsp.buf.format| when using LSP formatting
 
 ---@class conform.FormatLinesOpts
 ---@field timeout_ms? integer Time in milliseconds to block for formatting. Defaults to 1000. No effect if async = true.

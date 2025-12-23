@@ -108,6 +108,48 @@ describe("runner", function()
       assert.equal(dirname, ctx.dirname)
       assert.truthy(ctx.filename:match(dirname .. "/.conform.%d+.README.md$"))
     end)
+
+    it(
+      "sets temp file with absolute path when stdin = false and tmpfile_format is absolute",
+      function()
+        vim.cmd.edit({ args = { "README.md" } })
+        local bufnr = vim.api.nvim_get_current_buf()
+        conform.formatters.test = {
+          meta = { url = "", description = "" },
+          command = "echo",
+          stdin = false,
+          tmpfile_format = "/tmp/.conform.$RANDOM.$FILENAME",
+        }
+        local config = assert(conform.get_formatter_config("test"))
+        local ctx = runner.build_context(0, config)
+        local bufname = vim.api.nvim_buf_get_name(bufnr)
+        local dirname = vim.fs.dirname(bufname)
+        assert.equal(bufnr, ctx.buf)
+        assert.equal(dirname, ctx.dirname)
+        assert.truthy(ctx.filename:match("/tmp/.conform.%d+.README.md$"))
+      end
+    )
+
+    it(
+      "sets temp file with relative path when stdin = false and tmpfile_format is relative",
+      function()
+        vim.cmd.edit({ args = { "README.md" } })
+        local bufnr = vim.api.nvim_get_current_buf()
+        conform.formatters.test = {
+          meta = { url = "", description = "" },
+          command = "echo",
+          stdin = false,
+          tmpfile_format = "../.conform.$RANDOM.$FILENAME",
+        }
+        local config = assert(conform.get_formatter_config("test"))
+        local ctx = runner.build_context(0, config)
+        local bufname = vim.api.nvim_buf_get_name(bufnr)
+        local dirname = vim.fs.dirname(bufname)
+        assert.equal(bufnr, ctx.buf)
+        assert.equal(dirname, ctx.dirname)
+        assert.truthy(ctx.filename:match(dirname .. "/../.conform.%d+.README.md$"))
+      end
+    )
   end)
 
   describe("build_cmd", function()
@@ -384,6 +426,30 @@ print("a")
           } }
         )
         assert.are.same({ "a", "d", "c" }, vim.api.nvim_buf_get_lines(0, 0, -1, false))
+      end)
+
+      it("applies edits that are inserting at the beginning of the range", function()
+        run_formatter(
+          "a\nb\nc",
+          "d\na\nb\nc",
+          { range = {
+            start = { 1, 0 },
+            ["end"] = { 2, 0 },
+          } }
+        )
+        assert.are.same({ "d", "a", "b", "c" }, vim.api.nvim_buf_get_lines(0, 0, -1, false))
+      end)
+
+      it("applies edits that are inserting at the end of the range", function()
+        run_formatter(
+          "a\nb\nc",
+          "a\nb\nc\nd",
+          { range = {
+            start = { 2, 0 },
+            ["end"] = { 3, 0 },
+          } }
+        )
+        assert.are.same({ "a", "b", "c", "d" }, vim.api.nvim_buf_get_lines(0, 0, -1, false))
       end)
     end)
 
