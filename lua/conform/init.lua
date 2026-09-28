@@ -110,24 +110,13 @@ M.setup = function(opts)
               vim.log.levels.ERROR
             )
           end
-          M.format(
-            vim.tbl_deep_extend("force", format_args, {
-              buf = args.buf,
-              async = false,
-            }),
-            callback
-          )
+          local sync_format_opts = vim.tbl_deep_extend("force", format_args, {
+            buf = args.buf,
+            async = false,
+          })
+          ---@cast sync_format_opts conform.FormatOpts
+          M.format(sync_format_opts, callback)
         end
-      end,
-    })
-    vim.api.nvim_create_autocmd("VimLeavePre", {
-      desc = "conform.nvim hack to work around Neovim bug",
-      pattern = "*",
-      group = aug,
-      callback = function()
-        -- HACK: Work around https://github.com/neovim/neovim/issues/21856
-        -- causing exit code 134 on :wq
-        vim.cmd.sleep({ args = { "1m" } })
       end,
     })
   end
@@ -163,25 +152,24 @@ M.setup = function(opts)
               vim.log.levels.ERROR
             )
           end
-          M.format(
-            vim.tbl_deep_extend("force", format_args, {
-              buf = args.buf,
-              async = true,
-            }),
-            function(err)
-              num_running_format_jobs = num_running_format_jobs - 1
-              if not err and vim.api.nvim_buf_is_valid(args.buf) then
-                vim.api.nvim_buf_call(args.buf, function()
-                  vim.b[args.buf].conform_applying_formatting = true
-                  vim.cmd.update()
-                  vim.b[args.buf].conform_applying_formatting = false
-                end)
-              end
-              if callback then
-                callback(err)
-              end
+          local async_format_opts = vim.tbl_deep_extend("force", format_args, {
+            buf = args.buf,
+            async = true,
+          })
+          ---@cast async_format_opts conform.FormatOpts
+          M.format(async_format_opts, function(err)
+            num_running_format_jobs = num_running_format_jobs - 1
+            if not err and vim.api.nvim_buf_is_valid(args.buf) then
+              vim.api.nvim_buf_call(args.buf, function()
+                vim.b[args.buf].conform_applying_formatting = true
+                vim.cmd.update()
+                vim.b[args.buf].conform_applying_formatting = false
+              end)
             end
-          )
+            if callback then
+              callback(err)
+            end
+          end)
         end
       end,
     })
@@ -836,10 +824,8 @@ M.get_formatter_info = function(formatter, bufnr)
 end
 
 M.formatexpr = function(opts)
-  -- Change the defaults slightly from conform.format
+  -- Use the same defaults as conform.format(), but force async = false and handle the range
   opts = vim.tbl_deep_extend("keep", opts or {}, {
-    timeout_ms = 500,
-    lsp_format = "fallback",
     bufnr = vim.api.nvim_get_current_buf(),
   })
   -- Force async = false

@@ -337,6 +337,7 @@ FORMATTERS                                                    *conform-formatter
            JavaScript/JSON and markdown.
 `dfmt` - Formatter for D source code.
 `dioxus` - Format `rsx!` snippets in Rust files.
+`djangofmt` - A fast, HTML aware, Django template formatter, written in Rust.
 `djlint` - ✨ HTML Template Linter and Formatter. Django - Jinja - Nunjucks -
          Handlebars - GoLang.
 `docformatter` - docformatter automatically formats docstrings to follow a
@@ -425,6 +426,7 @@ FORMATTERS                                                    *conform-formatter
 `liquidsoap-prettier` - A binary to format Liquidsoap scripts
 `llf` - A LaTeX reformatter / beautifier.
 `lua-format` - Code formatter for Lua.
+`luafmt` - The Lua and EmmyLua formatter from EmmyLua Analyzer Rust.
 `mago_format` - Mago is a toolchain for PHP that aims to provide a set of tools
               to help developers write better code.
 `mago_lint` - Mago is a toolchain for PHP that aims to provide a set of tools to
@@ -463,6 +465,8 @@ FORMATTERS                                                    *conform-formatter
 `ocp-indent` - Automatic indentation of OCaml source files.
 `odinfmt` - Auto-formatter for the Odin programming language.
 `opa_fmt` - Format Rego files using `opa fmt` command.
+`openapi_format` - Format an OpenAPI document by ordering, formatting and
+                 filtering fields.
 `ormolu` - A formatter for Haskell source code.
 `oxfmt` - A Prettier-compatible code formatter.
 `oxlint` - An oxidized replacement for ESLint that fixes lint errors.
@@ -470,7 +474,12 @@ FORMATTERS                                                    *conform-formatter
              configuration files to a canonical format and style.
 `palantir-java-format` - A modern, lambda-friendly, 120 character Java
                        formatter.
+`panache` - A formatter, linter, and language server for Markdown, Quarto, and R
+          Markdown.
+`panache-fix` - Linter for Markdown, Quarto, and R Markdown. Applies auto-
+              fixable rule violations.
 `pangu` - Insert whitespace between CJK and half-width characters.
+`pasfmt` - Delphi code formatter.
 `perlimports` - Make implicit Perl imports explicit.
 `perltidy` - Perl::Tidy, a source code formatter for Perl.
 `pg_format` - PostgreSQL SQL syntax beautifier.
@@ -489,6 +498,7 @@ FORMATTERS                                                    *conform-formatter
 `pretty-php` - The opinionated PHP code formatter.
 `prettypst` - Formatter for Typst.
 `prolog` - Language Server Protocol server and formatter for SWI-Prolog.
+`pruner` - A language-agnostic, treesitter powered formatter.
 `puppet-lint` - Check that your Puppet manifests conform to the style guide.
 `purs-tidy` - A syntax tidy-upper for PureScript.
 `pycln` - A Python formatter for finding and removing unused import statements.
@@ -517,6 +527,7 @@ FORMATTERS                                                    *conform-formatter
 `ruff_organize_imports` - An extremely fast Python linter, written in Rust.
                         Organize imports.
 `rufo` - Rufo is an opinionated ruby formatter.
+`rumdl` - Markdown Linter and Formatter written in Rust.
 `runic` - Julia code formatter.
 `rustfmt` - A tool for formatting rust code according to style guidelines.
 `rustywind` - A tool for formatting Tailwind CSS classes.
@@ -571,7 +582,10 @@ FORMATTERS                                                    *conform-formatter
 `treefmt` - one CLI to format your repo.
 `trim_newlines` - Trim empty lines at the end of the file.
 `trim_whitespace` - Trim trailing whitespace.
+`trunk` - Trunk universal formatter.
 `twig-cs-fixer` - Automatically fix Twig Coding Standards issues
+`txtpbfmt` - txtpbfmt parses, edits and formats text proto files in a way that
+           preserves comments.
 `typespec` - TypeSpec compiler and CLI.
 `typos` - Source code spell checker
 `typstyle` - Beautiful and reliable typst code formatter.
